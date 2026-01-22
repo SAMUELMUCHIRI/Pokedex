@@ -1,32 +1,31 @@
-import { createInterface } from "node:readline";
-import { stdin, stdout } from "node:process";
-import { getCommands } from "./commands.js";
-const rl = createInterface({
-    input: stdin,
-    output: stdout,
-    prompt: "Pokedex  > ",
-});
-export function cleanInput(input) {
-    return input.trim().split("  ");
-}
-export function startREPL() {
-    console.log("Welcome to the Pokedex!");
-    rl.prompt();
-    rl.on("line", (input) => {
-        const commands = cleanInput(input);
-        if (commands.length === 0) {
-            rl.prompt();
+export function startREPL(state) {
+    state.readline.prompt();
+    state.readline.on("line", async (input) => {
+        const words = cleanInput(input);
+        if (words.length === 0) {
+            state.readline.prompt();
+            return;
         }
-        else {
-            const command = commands[0];
-            const commandMap = getCommands();
-            if (commandMap[command]) {
-                commandMap[command].callback(commandMap);
-            }
-            else {
-                console.log(`Unknown command`);
-            }
-            rl.prompt();
+        const commandName = words[0];
+        const cmd = state.commands[commandName];
+        if (!cmd) {
+            console.log(`Unknown command: "${commandName}". Type "help" for a list of commands.`);
+            state.readline.prompt();
+            return;
         }
+        try {
+            cmd.callback(state);
+        }
+        catch (e) {
+            console.log(e);
+        }
+        state.readline.prompt();
     });
+}
+export function cleanInput(input) {
+    return input
+        .toLowerCase()
+        .trim()
+        .split(" ")
+        .filter((word) => word !== "");
 }
