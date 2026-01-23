@@ -49,4 +49,25 @@ export class PokeAPI {
             throw error;
         }
     }
+    async fetchPokemon(pokemonName) {
+        try {
+            let url = `${PokeAPI.baseURL}/pokemon/${pokemonName}`;
+            const anycache = this.cache.get(url);
+            if (anycache) {
+                console.log("-------From Cache--------");
+                return anycache;
+            }
+            else {
+                console.log("-------From API-------");
+                const response = await fetch(url);
+                const data = await response.json();
+                this.cache.add(url, data);
+                return data;
+            }
+        }
+        catch (error) {
+            console.error("Error fetching pokemon :", error);
+            throw error;
+        }
+    }
 }

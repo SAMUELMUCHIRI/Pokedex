@@ -14,5 +14,6 @@ export function initState(interval) {
         readline: rl,
         commands: getCommands(),
         command_args: undefined,
+        pokemon_caught: new Map(),
     };
 }

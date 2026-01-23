@@ -8,6 +8,10 @@ export type CLICommand = {
   callback: (state: State) => Promise<void>;
 };
 
+type PokemonCaught = {
+  caught: boolean;
+};
+
 export type State = {
   PokeAPI: PokeAPI;
   nextLocationsURL: string | undefined;
@@ -15,6 +19,7 @@ export type State = {
   readline: Interface;
   commands: Record<string, CLICommand>;
   command_args?: string;
+  pokemon_caught: Map<string, boolean>;
 };
 
 export function initState(interval: number) {
@@ -31,5 +36,6 @@ export function initState(interval: number) {
     readline: rl,
     commands: getCommands(),
     command_args: undefined,
+    pokemon_caught: new Map<string, boolean>(),
   };
 }
