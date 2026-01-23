@@ -14,9 +14,10 @@ export type State = {
   prevLocationsURL: string | undefined;
   readline: Interface;
   commands: Record<string, CLICommand>;
+  command_args?: string;
 };
 
-export function initState() {
+export function initState(interval: number) {
   const rl = createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -24,10 +25,11 @@ export function initState() {
   });
 
   return {
-    PokeAPI: new PokeAPI(100000),
+    PokeAPI: new PokeAPI(interval),
     nextLocationsURL: undefined,
     prevLocationsURL: undefined,
     readline: rl,
     commands: getCommands(),
+    command_args: undefined,
   };
 }

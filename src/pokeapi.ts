@@ -1,4 +1,4 @@
-import { Cache } from "./pokecache";
+import { Cache } from "./pokecache.js";
 
 export class PokeAPI {
   private static readonly baseURL = "https://pokeapi.co/api/v2";
@@ -18,10 +18,14 @@ export class PokeAPI {
         pageURL || `${PokeAPI.baseURL}/location`,
       );
       if (anycache) {
+        console.log("-------From Cache--------");
         return anycache;
       } else {
+        console.log("-------From API-------");
         const response = await fetch(pageURL || `${PokeAPI.baseURL}/location`);
         const data = await response.json();
+
+        this.cache.add(pageURL || `${PokeAPI.baseURL}/location`, data);
         return data;
       }
     } catch (error) {
@@ -30,15 +34,23 @@ export class PokeAPI {
     }
   }
 
-  async fetchLocation(locationName: string): Promise<Location> {
+  async fetchLocation(locationName: string): Promise<Location_Area> {
     try {
-      const response = await fetch(
-        `${PokeAPI.baseURL}/location/${locationName}`,
-      );
-      const data = await response.json();
-      return data;
+      let url = `${PokeAPI.baseURL}/location-area/${locationName}`;
+      const anycache: any = this.cache.get(url);
+      if (anycache) {
+        console.log("-------From Cache--------");
+        return anycache;
+      } else {
+        console.log("-------From API-------");
+        const response = await fetch(url);
+        const data = await response.json();
+
+        this.cache.add(url, data);
+        return data;
+      }
     } catch (error) {
-      console.error("Error fetching locations:", error);
+      console.error("Error fetching location area :", error);
       throw error;
     }
   }
@@ -80,4 +92,44 @@ export type Location = {
   game_indices: GameIndex[];
   names: LocalizedName[];
   region: NamedAPIResource;
+};
+type EncounterMethodRate = {
+  encounter_method: NamedAPIResource;
+  version_details: {
+    rate: number;
+    version: NamedAPIResource;
+  }[];
+};
+
+type LocationName = {
+  language: NamedAPIResource;
+  name: string;
+};
+
+type EncounterDetail = {
+  chance: number;
+  condition_values: NamedAPIResource[];
+  min_level: number;
+  max_level: number;
+  method: NamedAPIResource;
+};
+
+type PokemonEncounterVersionDetail = {
+  encounter_details: EncounterDetail[];
+  max_chance: number;
+  version: NamedAPIResource;
+};
+
+type PokemonEncounter = {
+  pokemon: NamedAPIResource;
+  version_details: PokemonEncounterVersionDetail[];
+};
+export type Location_Area = {
+  id: number;
+  name: string;
+  game_index: number;
+  location: NamedAPIResource;
+  names: LocalizedName[];
+  encounter_method_rates: EncounterMethodRate[];
+  pokemon_encounters: PokemonEncounter[];
 };

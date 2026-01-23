@@ -9,5 +9,4 @@ export async function map(state) {
     for (const location of locations.results) {
         console.log(`${location.name}-area`);
     }
-    //console.log(state);
 }
