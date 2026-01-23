@@ -24,7 +24,7 @@ export function initState() {
   });
 
   return {
-    PokeAPI: new PokeAPI(),
+    PokeAPI: new PokeAPI(100000),
     nextLocationsURL: undefined,
     prevLocationsURL: undefined,
     readline: rl,
