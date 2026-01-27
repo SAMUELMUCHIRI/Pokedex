@@ -11,6 +11,16 @@ A Pokedex is just a make-believe device that lets us look up information about P
 - Get hands-on practice with local Typescript development and tooling
 - Learn about caching and how to use it to improve performance
 
+## Testing Framework
+We'll be using **Vitest** for testing. Vitest is a fast, modern test runner that supports TypeScript out of the box.
+The test Files are located 
+```bash 
+src
+|__ repl.test.ts
+|__ cache.test.ts
+```
+
+
 ## Installation
 ```bash
 npm install  # set up the project
